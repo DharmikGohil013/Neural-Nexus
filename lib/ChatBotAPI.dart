@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatBotAPI {
-  static const String apiKey = 'your-api-key'; // Replace with your OpenAI API key
-  static const String apiUrl = 'https://api.openai.com/v1/completions';
+  static const String apiKey = 'AIzaSyBEN7lWDrHERtV2hNXlphq_yhROna7EWmE'; // Replace with your OpenAI API key
+  static const String apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=GEMINI_API_KEY';
 
   // Method to fetch a response from the chatbot
   Future<String> getResponse(String userInput) async {
