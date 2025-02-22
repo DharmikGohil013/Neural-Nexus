@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // For launching URLs
 
 void main() {
   runApp(const MyApp());
@@ -55,21 +56,18 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-
-      // Simulate network call
       await Future.delayed(const Duration(seconds: 2));
-
-      // Handle login logic
-      final email = _emailController.text;
-      final password = _passwordController.text;
-
-      // TODO: Add actual authentication logic
-      print('Login attempted with email: $email, password: $password');
-
       setState(() => _isLoading = false);
+    }
+  }
 
-      // Navigate to home after successful login
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+  Future<void> _launchURL() async {
+    final Uri url = Uri.parse('https://github.com/DharmikGohil013/Neural-Nexus');
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication, // Opens in the default browser (e.g., Chrome)
+    )) {
+      throw Exception('Could not launch $url');
     }
   }
 
@@ -86,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 const SizedBox(height: 60),
                 Image.asset(
-                  'assets/images/logo.png', // Add your logo here
+                  'assets/images/logo.png',
                   height: 120,
                   width: 120,
                 ),
@@ -190,6 +188,18 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text('Sign Up'),
                     ),
                   ],
+                ),
+                const SizedBox(height: 40),
+                InkWell(
+                  onTap: _launchURL,
+                  child: const Text(
+                    'Made by Neral Nexus',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ],
             ),
