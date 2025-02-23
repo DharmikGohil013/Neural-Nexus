@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching URLs
-import 'signup.dart';
+import 'signup.dart'; // Import SignUpPage
+import 'home.dart'; // Import HomePage
+
 void main() {
   runApp(const MyApp());
 }
@@ -56,8 +58,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
       setState(() => _isLoading = false);
+
+      // Navigate to HomePage after successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     }
   }
 
@@ -196,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   onTap: _launchURL,
                   child: const Text(
-                    'Made by Neral Nexus',
+                    'Made by Neural Nexus',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.blue,
