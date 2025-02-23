@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 
 class FitnessPage extends StatefulWidget {
   final String feature; // Parameter to identify which fitness feature was selected

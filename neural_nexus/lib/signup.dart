@@ -15,6 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true; // ✅ Separate boolean for confirm password
   bool _isLoading = false;
 
   Future<void> _signUp() async {
@@ -121,13 +122,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: _obscurePassword,
-                  decoration: const InputDecoration(
+                  obscureText: _obscureConfirmPassword, // ✅ Separate state for confirm password
+                  decoration: InputDecoration(
                     labelText: 'Confirm Password',
-                    prefixIcon: Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureConfirmPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                    ),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
                     if (value != _passwordController.text) {
                       return 'Passwords do not match';
                     }
