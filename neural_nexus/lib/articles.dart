@@ -7,41 +7,35 @@ class ArticlesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Health Articles'),
+        title: const Text("Health Articles"),
         backgroundColor: Colors.blue.shade800,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
-        children: const [
+        children: [
           ArticleCard(
-            title: "The Importance of Hydration",
-            content:
-            "Water is essential for the body to function properly. Staying hydrated helps maintain energy levels, improves digestion, and flushes out toxins. Aim for at least 8 glasses of water daily.",
+            title: "5 Ways to Improve Your Heart Health",
+            content: "Maintaining a balanced diet, exercising regularly, reducing stress, and avoiding smoking can significantly improve heart health.",
           ),
           ArticleCard(
-            title: "Healthy Eating Habits",
-            content:
-            "A balanced diet includes proteins, carbohydrates, healthy fats, vitamins, and minerals. Eating fresh vegetables, fruits, whole grains, and lean meats boosts immunity and overall health.",
+            title: "The Importance of Sleep for a Healthy Life",
+            content: "Quality sleep is essential for physical and mental health. Aim for 7-9 hours of sleep per night to enhance recovery and well-being.",
           ),
           ArticleCard(
-            title: "Benefits of Regular Exercise",
-            content:
-            "Engaging in at least 30 minutes of physical activity daily improves heart health, builds muscle strength, and reduces stress. Activities like jogging, yoga, or strength training help maintain a healthy body.",
+            title: "How to Maintain a Healthy Diet",
+            content: "Eat a variety of vegetables, lean proteins, and whole grains. Avoid processed foods and sugary drinks for a balanced diet.",
           ),
           ArticleCard(
-            title: "Mental Health Matters",
-            content:
-            "Managing stress, getting enough sleep, and practicing mindfulness can enhance mental well-being. Engaging in hobbies and talking to loved ones also contribute to better emotional health.",
+            title: "Tips to Reduce Stress and Anxiety",
+            content: "Practicing mindfulness, deep breathing, and regular exercise can help manage stress and promote relaxation.",
           ),
           ArticleCard(
-            title: "How to Boost Immunity",
-            content:
-            "Consuming vitamin-rich foods, getting enough rest, and exercising regularly help strengthen the immune system. Avoiding excessive processed foods and stress also plays a crucial role in immunity.",
+            title: "Hydration: Why Water is Key to Your Health",
+            content: "Drinking enough water daily helps with digestion, skin health, and overall bodily functions. Aim for at least 8 glasses a day.",
           ),
           ArticleCard(
-            title: "Sleep and Its Impact on Health",
-            content:
-            "Quality sleep improves memory, boosts mood, and enhances overall health. Aim for at least 7-9 hours of sleep every night for optimal body and brain function.",
+            title: "The Benefits of Regular Exercise",
+            content: "Engaging in physical activity helps maintain weight, boosts mood, and strengthens the immune system.",
           ),
         ],
       ),
@@ -58,27 +52,16 @@ class ArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 3,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              content,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
-            ),
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(content, style: const TextStyle(fontSize: 14)),
           ],
         ),
       ),
