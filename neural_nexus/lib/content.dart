@@ -16,60 +16,116 @@ class ContentPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Latest Health Articles",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildArticleCard(
-              context,
-              "The Benefits of Daily Exercise",
-              "Exercise improves overall health, boosts immunity, and reduces stress.",
-              "https://www.healthline.com/nutrition/10-benefits-of-exercise",
-            ),
-            _buildArticleCard(
-              context,
-              "Top 10 Superfoods for a Healthy Diet",
-              "Discover the best superfoods to improve your nutrition and well-being.",
-              "https://www.medicalnewstoday.com/articles/what-are-superfoods",
-            ),
-            _buildArticleCard(
-              context,
-              "How to Improve Your Sleep Naturally",
-              "Effective strategies to enhance sleep quality without medication.",
-              "https://www.sleepfoundation.org/sleep-hygiene",
-            ),
-            _buildArticleCard(
-              context,
-              "Hydration and Its Impact on Your Health",
-              "Learn why drinking enough water is crucial for your body.",
-              "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/water/art-20044256",
-            ),
+            // ... (Keep existing article sections)
+
             const SizedBox(height: 20),
             const Text(
-              "Health & Fitness Videos",
+              "Health & Fitness Shorts",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            _buildVideoCard(
-              context,
-              "Full Body Workout for Beginners",
-              "https://www.youtube.com/watch?v=UBMk30rjy0o",
+            _buildReelsSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReelsSection() {
+    final List<Map<String, String>> reels = [
+      {
+        'title': 'Full Body Workout',
+        'url': 'https://www.youtube.com/watch?v=UBMk30rjy0o',
+        'duration': '0:30'
+      },
+      {
+        'title': 'Healthy Eating Tips',
+        'url': 'https://www.youtube.com/watch?v=oIsPqja-M2I',
+        'duration': '0:45'
+      },
+    ];
+
+    return SizedBox(
+      height: 220, // Adjust based on your needs
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: reels.length,
+        itemBuilder: (context, index) {
+          return _buildReelCard(
+            context,
+            reels[index]['title']!,
+            reels[index]['url']!,
+            reels[index]['duration']!,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildReelCard(BuildContext context, String title, String url, String duration) {
+    return Container(
+      width: 120, // Card width
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200],
+      ),
+      child: GestureDetector(
+        onTap: () async {
+          Uri uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri);
+          }
+        },
+        child: Stack(
+          children: [
+            // Add actual video thumbnail here
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.grey, // Placeholder color
+              ),
             ),
-            _buildVideoCard(
-              context,
-              "Healthy Eating Tips",
-              "https://www.youtube.com/watch?v=oIsPqja-M2I",
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  duration,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-            _buildVideoCard(
-              context,
-              "5 Tips for Better Sleep",
-              "https://www.youtube.com/watch?v=fnI3VbZ0tR0",
+            const Center(
+              child: Icon(
+                Icons.play_circle_filled,
+                size: 40,
+                color: Colors.white,
+              ),
             ),
-            _buildVideoCard(
-              context,
-              "Yoga for Stress Relief",
-              "https://www.youtube.com/watch?v=v7AYKMP6rOE",
+            Positioned(
+              bottom: 12,
+              left: 8,
+              right: 8,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -77,40 +133,5 @@ class ContentPage extends StatelessWidget {
     );
   }
 
-  Widget _buildArticleCard(BuildContext context, String title, String description, String url) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 3,
-      child: ListTile(
-        leading: const Icon(Icons.article),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(description),
-        trailing: const Icon(Icons.arrow_forward),
-        onTap: () async {
-          Uri uri = Uri.parse(url);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri);
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildVideoCard(BuildContext context, String title, String videoUrl) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 3,
-      child: ListTile(
-        leading: const Icon(Icons.video_library),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        trailing: const Icon(Icons.play_arrow),
-        onTap: () async {
-          Uri uri = Uri.parse(videoUrl);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri);
-          }
-        },
-      ),
-    );
-  }
+// Keep existing _buildArticleCard and other methods
 }
