@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // For launching URLs
-
-import 'signup.dart'; // Import SignUpPage
-import 'home.dart'; // Import HomePage
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
 
 import 'signup.dart';
+import 'home.dart';
 import 'forgot_password.dart';
 
 void main() {
@@ -45,6 +47,17 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
+  String? _errorMessage;
+
+  // Get the correct base URL depending on platform
+  String get baseUrl {
+    if (Platform.isAndroid) {
+      return 'http://192.168.160.94:3000'; // Android emulator localhost
+    } else if (Platform.isIOS) {
+      return 'http://192.168.160.94:3000'; // iOS simulator localhost
+    }
+    return 'http://192.168.160.94:3000'; // Default for web/desktop
+  }
 
   @override
   void dispose() {
@@ -61,15 +74,81 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
 
-      // Navigate to HomePage after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      try {
+        debugPrint('Attempting to connect to: ${baseUrl}/login');
+
+        final response = await http.post(
+          Uri.parse('${baseUrl}/login'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: json.encode({
+            'email': _emailController.text.trim(),
+            'password': _passwordController.text,
+          }),
+        ).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () {
+            throw TimeoutException('Connection timed out. Please try again.');
+          },
+        );
+
+        debugPrint('Response status: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+
+        final responseData = json.decode(response.body);
+
+        if (response.statusCode == 200) {
+          if (mounted) {
+            // Store the token if needed
+            // final token = responseData['token'];
+            // await SharedPreferences.getInstance()
+            //   .then((prefs) => prefs.setString('token', token));
+
+            setState(() => _errorMessage = null);
+
+            // Navigate to HomePage after successful login
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          }
+        } else {
+          setState(() {
+            _errorMessage = responseData['message'] ?? 'Login failed. Please check your credentials and try again.';
+          });
+        }
+      } on SocketException catch (e) {
+        debugPrint('Socket Exception: $e');
+        setState(() {
+          _errorMessage = 'Cannot connect to server. Please check your internet connection and try again.';
+        });
+      } on TimeoutException catch (e) {
+        debugPrint('Timeout Exception: $e');
+        setState(() {
+          _errorMessage = 'Connection timed out. Please try again.';
+        });
+      } on FormatException catch (e) {
+        debugPrint('Format Exception: $e');
+        setState(() {
+          _errorMessage = 'Invalid server response. Please try again.';
+        });
+      } catch (e) {
+        debugPrint('Unexpected error: $e');
+        setState(() {
+          _errorMessage = 'An unexpected error occurred. Please try again.';
+        });
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -77,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
     final Uri url = Uri.parse('https://github.com/DharmikGohil013/Neural-Nexus');
     if (!await launchUrl(
       url,
-      mode: LaunchMode.externalApplication, // Opens in the default browser (e.g., Chrome)
+      mode: LaunchMode.externalApplication,
     )) {
       throw Exception('Could not launch $url');
     }
@@ -159,7 +238,23 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
+
+                // Error message display
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -191,7 +286,6 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const Text('Forgot Password?'),
                 ),
-
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
