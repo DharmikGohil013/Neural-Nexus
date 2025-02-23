@@ -11,44 +11,58 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: Colors.blue.shade800, // Consistent with home.dart
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            _buildProfileAvatar(),
-            const SizedBox(height: 20),
-            _buildProfileInfo('Name', 'John Doe', Icons.person),
-            _buildProfileInfo('Email', 'johndoe@example.com', Icons.email),
-            _buildProfileInfo('Phone', '+1 234 567 890', Icons.phone),
-            const SizedBox(height: 30),
-            _buildEditProfileButton(context),
-            const SizedBox(height: 20),
-            _buildLogoutButton(context),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              _buildProfileAvatar(context),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              _buildProfileInfo(context, 'Name', 'John Doe', Icons.person),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              _buildProfileInfo(context, 'Email', 'johndoe@example.com', Icons.email),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              _buildProfileInfo(context, 'Phone', '+1 234 567 890', Icons.phone),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              _buildEditProfileButton(context),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              _buildLogoutButton(context),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025), // Bottom padding
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildProfileAvatar() {
-    return const CircleAvatar(
-      radius: 50,
-      backgroundImage: AssetImage('assets/images/user.png'), // Add your profile image
+  Widget _buildProfileAvatar(BuildContext context) {
+    return CircleAvatar(
+      radius: MediaQuery.of(context).size.width * 0.15, // Responsive radius
+      backgroundImage: const AssetImage('assets/images/user.png'), // Add your profile image
     );
   }
 
-  Widget _buildProfileInfo(String label, String value, IconData icon) {
+  Widget _buildProfileInfo(BuildContext context, String label, String value, IconData icon) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, color: Colors.blue),
-        title: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(value),
+        leading: Icon(icon, color: Colors.blue.shade800, size: MediaQuery.of(context).size.width * 0.07),
+        title: Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+          ),
+        ),
+        subtitle: Text(
+          value,
+          style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+        ),
       ),
     );
   }
@@ -58,13 +72,19 @@ class ProfilePage extends StatelessWidget {
       onPressed: () {
         // TODO: Implement Edit Profile Feature
       },
-      icon: const Icon(Icons.edit),
-      label: const Text('Edit Profile'),
+      icon: Icon(Icons.edit, size: MediaQuery.of(context).size.width * 0.06),
+      label: Text(
+        'Edit Profile',
+        style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+      ),
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.015,
+          horizontal: MediaQuery.of(context).size.width * 0.05,
+        ),
         backgroundColor: Colors.blue.shade800,
         foregroundColor: Colors.white,
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 5,
       ),
@@ -79,8 +99,18 @@ class ProfilePage extends StatelessWidget {
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       },
-      icon: const Icon(Icons.logout, color: Colors.red),
-      label: const Text('Logout', style: TextStyle(color: Colors.red, fontSize: 16)),
+      icon: Icon(
+        Icons.logout,
+        color: Colors.red,
+        size: MediaQuery.of(context).size.width * 0.06,
+      ),
+      label: Text(
+        'Logout',
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: MediaQuery.of(context).size.width * 0.045,
+        ),
+      ),
     );
   }
 }
