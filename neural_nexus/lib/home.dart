@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Colors.blue.shade50, // Subtle background color
+        color: Colors.blue.shade50,
         child: Column(
           children: [
             Container(
@@ -90,28 +90,30 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.1,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: MediaQuery.of(context).size.width * 0.12,
-                      color: Colors.blue.shade800,
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: MediaQuery.of(context).size.width * 0.1,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.person,
+                        size: MediaQuery.of(context).size.width * 0.12,
+                        color: Colors.blue.shade800,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                  const Text(
-                    'Fit Sync User',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                    const Text(
+                      'Fit Sync User',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -151,8 +153,7 @@ class _HomePageState extends State<HomePage> {
                     icon: Icons.logout,
                     title: 'Logout',
                     onTap: () {
-                      Navigator.pop(context);
-                      // TODO: Implement proper logout logic
+                      _showLogoutDialog(context);
                     },
                     color: Colors.red,
                   ),
@@ -161,6 +162,34 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Close drawer
+              // TODO: Add proper logout navigation (e.g., to LoginPage)
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Logout'),
+          ),
+        ],
       ),
     );
   }
@@ -219,6 +248,59 @@ class _HomeContentState extends State<HomeContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header with Greeting
+            Container(
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello, User!",
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ),
+                      ),
+                      Text(
+                        "Stay Fit, Stay Healthy",
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red.shade400,
+                    size: MediaQuery.of(context).size.width * 0.08,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+            // Health Summary
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildSummaryItem(context, "Steps", "5,432", Icons.directions_walk),
+                    _buildSummaryItem(context, "Heart", "72 bpm", Icons.favorite),
+                    _buildSummaryItem(context, "Sleep", "7h", Icons.nightlight_round),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            // Health Tracking
             Text(
               "Health Tracking",
               style: TextStyle(
@@ -257,6 +339,32 @@ class _HomeContentState extends State<HomeContent> {
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            // Daily Tip Banner
+            Card(
+              elevation: 2,
+              color: Colors.green.shade50,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+                child: Row(
+                  children: [
+                    Icon(Icons.lightbulb_outline, color: Colors.green.shade600),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                    Expanded(
+                      child: Text(
+                        "Tip of the Day: Drink 8 glasses of water!",
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          color: Colors.green.shade800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            // Nearby Doctors
             Text(
               "Nearby Doctors",
               style: TextStyle(
@@ -267,7 +375,7 @@ class _HomeContentState extends State<HomeContent> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
             ..._buildDoctorCards(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.025), // Bottom padding
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
           ],
         ),
       ),
@@ -278,6 +386,30 @@ class _HomeContentState extends State<HomeContent> {
     if (width > 900) return 4;
     if (width > 600) return 3;
     return 2;
+  }
+
+  Widget _buildSummaryItem(BuildContext context, String label, String value, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, size: MediaQuery.of(context).size.width * 0.06, color: Colors.blue.shade800),
+        SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.04,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.035,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildFeatureButton(BuildContext context, String label, IconData icon, int index) {
@@ -324,16 +456,17 @@ class _HomeContentState extends State<HomeContent> {
 
   List<Widget> _buildDoctorCards() {
     final doctors = [
-      {"name": "Dr. Smith", "specialty": "Cardiologist"},
-      {"name": "Dr. Johnson", "specialty": "Dentist"},
-      {"name": "Dr. Patel", "specialty": "Orthopedic"},
-      {"name": "Dr. Lee", "specialty": "Neurologist"},
+      {"name": "Dr. Smith", "specialty": "Cardiologist", "distance": "2.3 mi"},
+      {"name": "Dr. Johnson", "specialty": "Dentist", "distance": "1.8 mi"},
+      {"name": "Dr. Patel", "specialty": "Orthopedic", "distance": "3.5 mi"},
+      {"name": "Dr. Lee", "specialty": "Neurologist", "distance": "2.1 mi"},
     ];
 
     return doctors
         .map((doctor) => DoctorCard(
       name: doctor["name"]!,
       specialty: doctor["specialty"]!,
+      distance: doctor["distance"]!,
     ))
         .toList();
   }
@@ -342,8 +475,9 @@ class _HomeContentState extends State<HomeContent> {
 class DoctorCard extends StatelessWidget {
   final String name;
   final String specialty;
+  final String distance;
 
-  const DoctorCard({super.key, required this.name, required this.specialty});
+  const DoctorCard({super.key, required this.name, required this.specialty, required this.distance});
 
   @override
   Widget build(BuildContext context) {
@@ -370,18 +504,25 @@ class DoctorCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          specialty,
+          "$specialty • $distance",
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.04,
             color: Colors.grey.shade600,
           ),
         ),
-        trailing: Icon(
-          Icons.arrow_forward,
-          size: MediaQuery.of(context).size.width * 0.06,
-          color: Colors.blue.shade800,
+        trailing: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue.shade800,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: EdgeInsets.symmetric(horizontal: 8),
+          ),
+          child: Text(
+            "Book",
+            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.035),
+          ),
         ),
-        onTap: () {},
       ),
     );
   }
