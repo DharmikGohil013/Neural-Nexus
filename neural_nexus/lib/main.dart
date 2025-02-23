@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching URLs
-
+import 'signup.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -183,7 +183,10 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        // TODO: Implement sign up navigation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SignUpPage()),
+                        );
                       },
                       child: const Text('Sign Up'),
                     ),
