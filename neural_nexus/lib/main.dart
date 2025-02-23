@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching URLs
+
 import 'signup.dart'; // Import SignUpPage
 import 'home.dart'; // Import HomePage
+
+import 'signup.dart';
+import 'forgot_password.dart';
 
 void main() {
   runApp(const MyApp());
@@ -180,10 +184,14 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 15),
                 TextButton(
                   onPressed: () {
-                    // TODO: Implement forgot password
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+                    );
                   },
                   child: const Text('Forgot Password?'),
                 ),
+
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
