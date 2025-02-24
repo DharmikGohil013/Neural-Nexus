@@ -126,6 +126,30 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+
+  // void loginUser() async{
+  //   if(_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty){
+  //     var reqBody = {
+  //       "email":_emailController.text,
+  //       "password":_passwordController.text
+  //     };
+  //     var response = await http.post(Uri.parse(login),
+  //         headers: {"Content-Type":"application/json"},
+  //         body: jsonEncode(reqBody)
+  //     );
+  //     var jsonResponse = jsonDecode(response.body);
+  //     if(jsonResponse['status']){
+  //       var myToken = jsonResponse['token'];
+  //       // prefs.setString('token', myToken);
+  //       Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+  //     }else{
+  //       print('Something went wrong');
+  //     }
+  //   }
+  // }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
