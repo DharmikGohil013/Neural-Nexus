@@ -1,38 +1,51 @@
 const UserModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
-class UserServices{
- 
-    static async registerUser(email,password){
-        try{
-                console.log("-----Email --- Password-----",email,password);
-                
-                const createUser = new UserModel({email,password});
-                return await createUser.save();
-        }catch(err){
+class UserService {
+    // Register user
+    static async registerUser(email, password) {
+        try {
+            console.log("----- Registering User -----", email, password);
+
+            const existingUser = await UserModel.findOne({ email });
+            if (existingUser) {
+                throw new Error("User already exists with this email.");
+            }
+
+            const newUser = new UserModel({ email, password });
+            await newUser.save();
+            return newUser;
+        } catch (err) {
             throw err;
         }
     }
 
-    static async getUserByEmail(email){
-        try{
-            return await UserModel.findOne({email});
-        }catch(err){
-            console.log(err);
-        }
-    }
-
-    static async checkUser(email){
+    // Get user by email
+    static async getUserByEmail(email) {
         try {
-            return await UserModel.findOne({email});
-        } catch (error) {
-            throw error;
+            return await UserModel.findOne({ email });
+        } catch (err) {
+            throw new Error("Error fetching user by email");
         }
     }
 
-    static async generateAccessToken(tokenData,JWTSecret_Key,JWT_EXPIRE){
-        return jwt.sign(tokenData, JWTSecret_Key, { expiresIn: JWT_EXPIRE });
+    // Check if user exists
+    static async checkUser(email) {
+        try {
+            return await UserModel.findOne({ email });
+        } catch (error) {
+            throw new Error("Error checking user");
+        }
+    }
+
+    // Generate JWT Token
+    static async generateAccessToken(tokenData, JWTSecret_Key, JWT_EXPIRE) {
+        try {
+            return jwt.sign(tokenData, JWTSecret_Key, { expiresIn: JWT_EXPIRE });
+        } catch (error) {
+            throw new Error("Token generation failed");
+        }
     }
 }
 
-module.exports = UserServices;
+module.exports = UserService;
