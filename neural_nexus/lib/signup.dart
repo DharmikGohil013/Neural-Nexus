@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:neural_nexus/login.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -13,39 +15,33 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true; // ✅ Separate boolean for confirm password
   bool _isLoading = false;
+  bool _isNotValidate = false;
 
-  Future<void> _signUp() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-
-    try {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:4000/api/signup'), // Use your server IP
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'email': _emailController.text.trim(),
-          'password': _passwordController.text,
-        }),
+  void registerUser() async{
+    if(_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty){
+      var regBody = {
+        "email":_emailController.text,
+        "password":_passwordController.text
+      };
+      var response = await http.post(Uri.parse(registration),
+          headers: {"Content-Type":"application/json"},
+          body: jsonEncode(regBody)
       );
-
-      final responseData = json.decode(response.body);
-
-      if (response.statusCode == 201) {
-        // Signup success
-        Navigator.pop(context);
-        _showToast('Signup successful! Please login');
-      } else {
-        _showToast(responseData['error'] ?? 'Signup failed');
+      var jsonResponse = jsonDecode(response.body);
+      print(jsonResponse['status']);
+      if(jsonResponse['status']){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+      }else{
+        print("SomeThing Went Wrong");
       }
-    } catch (e) {
-      _showToast('Connection error: ${e.toString()}');
-    } finally {
-      setState(() => _isLoading = false);
+    }else{
+      setState(() {
+        _isNotValidate = true;
+      });
     }
   }
 
@@ -79,6 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
+                    filled: true,
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
@@ -94,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
@@ -119,36 +117,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword, // ✅ Separate state for confirm password
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureConfirmPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                      onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                    ),
-                    border: const OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
+
                 const SizedBox(height: 30),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _signUp,
+                    onPressed: _isLoading ? null : registerUser,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),

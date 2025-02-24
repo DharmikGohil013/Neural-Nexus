@@ -16,6 +16,11 @@ dependencies:
   fluttertoast: ^8.2.2
   video_player: ^2.7.0
   cached_network_image: ^3.3.0
+  velocity_x: ^3.6.0  # Add a proper version
+  shared_preferences: ^2.2.2  # Add latest stable version
+  jwt_decoder: ^2.0.1  # Add latest stable version
+  flutter_slidable: ^3.0.0  # Add latest stable version
+
 
 dev_dependencies:
   flutter_test:
