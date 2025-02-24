@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // Importing Main Page for Logout Navigation
+import 'main.dart';
+import 'login.dart';// Importing Main Page for Logout Navigation
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
